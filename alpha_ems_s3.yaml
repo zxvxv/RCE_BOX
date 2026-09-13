@@ -52,9 +52,6 @@ captive_portal:
 
 improv_serial:
 
-esp32_improv:
-  authorizer: none
-
 api:
   reboot_timeout: 0s
 
