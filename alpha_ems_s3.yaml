@@ -1,66 +1,63 @@
 # =============================================================
-# ALPHA HEMS: ESP32-S3 AUTONOMICZNY RDZEŃ (Wersja Produkcyjna)
-# Repozytorium: zxvxv/RCE_BOX/main
+# ALPHA HEMS: ESP32 AUTONOMICZNY RDZEŃ v6.18 (LILYGO SD)
+# Zmiany:
+# - v6.18: Zmiana nazwy AP i nadanie prostego hasła w celu ominięcia
+#   problemu z cache'owaniem profilu sieci w systemach iOS/Android.
 # =============================================================
 
 substitutions:
   name: "alpha-ems-s3"
   friendly_name: "Alpha EMS Core"
-  # UWAGA: Token zdefiniuj w lokalnym secrets.yaml jako 'github_token'
-  # github_token: "github_pat_11B57H4DY0jG7qROob454d_SEXAJ09Dxi..."
+  modbus_inverter_address: "0x01"
+  safe_mode_delay: 600s
+  default_maximum_battery_charge_current: "100"
+  default_max_sell_power: "12000"
+  default_system_work_mode: "Zero Export To Load"
+  default_solar_sell: "on"
+  default_force_off_grid: "off"
+  enable_sync_time: "false"
+  api_key: "QUxBMU1BMUtPVEExQTFLT1QxTUExQUxFMTY5MTY5MTE="
 
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
+  includes:
+    - sd_logger.h
+  libraries:
+    - "FS"
+    - "SD"
+    - "SPI"
+  on_boot:
+    priority: 600
+    then:
+      - lambda: |-
+          sd_logger.setup();
 
 esp32:
-  board: esp32-s3-devkitc-1
+  board: esp32dev
   framework:
     type: arduino
     advanced:
       sram1_as_iram: true
 
+# ==========================================
+# 1. SIEĆ, BLUETOOTH I PROVISIONING
+# ==========================================
 wifi:
   ap:
-    ssid: "ALPHA HEMS Konfiguracja"
-    # Całkowicie otwarta sieć ułatwiająca wejście do Captive Portal
+    ssid: "Alpha HEMS Setup"
+    password: "12345678"
 
 captive_portal:
 
-time:
-  - platform: sntp
-    id: sntp_time
-    timezone: "CET-1CEST,M3.5.0,M10.5.0/3"
+improv_serial:
+
+esp32_improv:
+  authorizer: none
+
+api:
+  reboot_timeout: 0s
 
 # ==========================================
-# 1. SPRZĘTOWY UART I MODBUS (LILYGO)
+# 0. MAGISTRALA SPI (Sprzętowa podstawa pod SD)
 # ==========================================
-uart:
-  - id: modbus_uart
-    tx_pin: 22
-    rx_pin: 21
-    baud_rate: 9600
-    stop_bits: 1
-
-modbus:
-  - id: deye_modbus
-    uart_id: modbus_uart
-    flow_control_pin: 17
-
-# ==========================================
-# 2. POBRANIE LOGIKI Z GITHUB (Rdzeń C++)
-# ==========================================
-# Pobieranie zewnętrznego pliku nagłówkowego bezpośrednio z prywatnego repo
-# Wymaga dodania github_token do secrets.yaml w środowisku ESPHome
-packages:
-  ems_core_logic:
-    url: https://${github_token}@raw.githubusercontent.com/zxvxv/RCE_BOX/main/ems_core.h
-    refresh: 1h
-
-# ==========================================
-# 3. URUCHOMIENIE KOMPONENTU
-# ==========================================
-custom_component:
-  - lambda: |-
-      auto alpha_ems = new AlphaEMSCore(id(deye_modbus));
-      return {alpha_ems};
