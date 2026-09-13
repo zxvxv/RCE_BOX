@@ -1,5 +1,5 @@
 # =============================================================
-# ALPHA HEMS: ESP32 AUTONOMICZNY RDZEŃ (Wersja Produkcyjna Plug&Play)
+# ALPHA HEMS: ESP32-S3 AUTONOMICZNY RDZEŃ (Wersja Produkcyjna)
 # Repozytorium: zxvxv/RCE_BOX/main
 # =============================================================
 
@@ -20,16 +20,11 @@ esp32:
     advanced:
       sram1_as_iram: true
 
-# ==========================================
-# KONFIGURACJA SIECI (TRYB PLUG & PLAY)
-# ==========================================
 wifi:
-  # Moduł utworzy własną sieć, jeśli nie znajdzie żadnej znanej w pamięci NVS.
   ap:
-    ssid: "Alpha EMS Hotspot"
-    # password: "OpcjonalneHasloDlaInstalatora"
+    ssid: "ALPHA HEMS Konfiguracja"
+    # Całkowicie otwarta sieć ułatwiająca wejście do Captive Portal
 
-# Aktywacja portalu przechwytującego do konfiguracji Wi-Fi przez klienta
 captive_portal:
 
 time:
@@ -38,7 +33,7 @@ time:
     timezone: "CET-1CEST,M3.5.0,M10.5.0/3"
 
 # ==========================================
-# 1. SPRZĘTOWY UART I MODBUS (DEYE)
+# 1. SPRZĘTOWY UART I MODBUS (LILYGO)
 # ==========================================
 uart:
   - id: modbus_uart
@@ -56,6 +51,7 @@ modbus:
 # 2. POBRANIE LOGIKI Z GITHUB (Rdzeń C++)
 # ==========================================
 # Pobieranie zewnętrznego pliku nagłówkowego bezpośrednio z prywatnego repo
+# Wymaga dodania github_token do secrets.yaml w środowisku ESPHome
 packages:
   ems_core_logic:
     url: https://${github_token}@raw.githubusercontent.com/zxvxv/RCE_BOX/main/ems_core.h
