@@ -18,7 +18,7 @@ substitutions:
   enable_sync_time: "false"
   api_key: "QUxBMU1BMUtPVEExQTFLT1QxTUExQUxFMTY5MTY5MTE="
   wifi_ssid: "WIFI_CONFIG"
-  wifi_password: "WIFI_CONFIG"
+  wifi_password: ""
 
 esphome:
   name: ${name}
