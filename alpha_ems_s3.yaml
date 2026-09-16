@@ -1,8 +1,8 @@
 # =============================================================
-# ALPHA HEMS: ESP32 AUTONOMICZNY RDZEŃ v7.02 (WAVESHARE S3 - GITHUB)
+# ALPHA HEMS: ESP32 AUTONOMICZNY RDZEŃ v7.03 (WAVESHARE S3 - GITHUB)
 # Zmiany:
-# - v7.02: Migracja pliku bazowego pod architekturę ESP32-S3 (SKU 28117).
-#   Aktywacja 8MB PSRAM, usunięcie obsługi SD/SPI, powrót Web Servera.
+# - v7.03: Otwarcie sieci AP (usunięcie hasła). Aktywacja 8MB PSRAM.
+#   Pełna migracja na ESP32-S3 (SKU 28117). Usunięcie SPI/SD.
 # =============================================================
 
 substitutions:
@@ -42,7 +42,6 @@ psram:
 wifi:
   ap:
     ssid: "Alpha HEMS Setup"
-    password: "12345678"
 
 captive_portal:
 
@@ -55,7 +54,3 @@ api:
 
 web_server:
   port: 80
-
-# ==========================================
-# UWAGA: USUNIĘTO SEKCJĘ "0. MAGISTRALA SPI" 
-# ==========================================
