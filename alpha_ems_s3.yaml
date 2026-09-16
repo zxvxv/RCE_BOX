@@ -1,8 +1,8 @@
 # =============================================================
-# ALPHA HEMS: ESP32 AUTONOMICZNY RDZEŃ v6.18 (LILYGO SD)
+# ALPHA HEMS: ESP32 AUTONOMICZNY RDZEŃ v7.02 (WAVESHARE S3 - GITHUB)
 # Zmiany:
-# - v6.18: Zmiana nazwy AP i nadanie prostego hasła w celu ominięcia
-#   problemu z cache'owaniem profilu sieci w systemach iOS/Android.
+# - v7.02: Migracja pliku bazowego pod architekturę ESP32-S3 (SKU 28117).
+#   Aktywacja 8MB PSRAM, usunięcie obsługi SD/SPI, powrót Web Servera.
 # =============================================================
 
 substitutions:
@@ -17,31 +17,27 @@ substitutions:
   default_force_off_grid: "off"
   enable_sync_time: "false"
   api_key: "QUxBMU1BMUtPVEExQTFLT1QxTUExQUxFMTY5MTY5MTE="
+  wifi_ssid: "WIFI_CONFIG"
+  wifi_password: "WIFI_CONFIG"
 
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
-  includes:
-    - sd_logger.h
-  libraries:
-    - "FS"
-    - "SD"
-    - "SPI"
-  on_boot:
-    priority: 600
-    then:
-      - lambda: |-
-          sd_logger.setup();
 
 esp32:
-  board: esp32dev
+  board: esp32-s3-devkitc-1
   framework:
     type: arduino
-    advanced:
-      sram1_as_iram: true
 
 # ==========================================
-# 1. SIEĆ, BLUETOOTH I PROVISIONING
+# AKTYWACJA 8MB PSRAM (Sprzętowy ratunek)
+# ==========================================
+psram:
+  mode: octal
+  speed: 80MHz
+
+# ==========================================
+# 1. SIEĆ I PROVISIONING
 # ==========================================
 wifi:
   ap:
@@ -50,11 +46,16 @@ wifi:
 
 captive_portal:
 
+logger:
+
 improv_serial:
 
 api:
   reboot_timeout: 0s
 
+web_server:
+  port: 80
+
 # ==========================================
-# 0. MAGISTRALA SPI (Sprzętowa podstawa pod SD)
+# UWAGA: USUNIĘTO SEKCJĘ "0. MAGISTRALA SPI" 
 # ==========================================
